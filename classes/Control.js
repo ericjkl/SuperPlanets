@@ -13,6 +13,9 @@ export default class Control {
         this.animationDriver = 0
         this.animationStep = Control.#getInitialAnimationStep()
         this.meteoriteAmount = 200
+        this.onMeteoriteAmountChange = null;
+        this.ambientLightingBrightness = 1;
+        this.onAmbientLightingBrightnessChange = null;
         this.#addListeners()
     }
 
@@ -79,7 +82,16 @@ export default class Control {
 
         const meteoriteAmountSlider = document.getElementById("meteoriteAmountSlider")
         meteoriteAmountSlider.oninput = ()=> {
-            this.meteoriteAmount = meteoriteAmountSlider.value
+            this.meteoriteAmount = (meteoriteAmountSlider.value) ** 1.5 + 200
+            this.onMeteoriteAmountChange()
+        }
+
+        const ambientBrightnessSlider = document.getElementById("ambientBrightnessSlider")
+        ambientBrightnessSlider.oninput = () => {
+            const factor = ambientBrightnessSlider.value
+            console.log(factor)
+            this.ambientLightingBrightness = factor > 1 ? factor ** 4 : factor
+            this.onAmbientLightingBrightnessChange()
         }
     }
 
@@ -90,7 +102,7 @@ export default class Control {
     updateScene() {
         this.render()
 
-        this.animationStep = this.pauseAnimation ? 0 : this.animationStep
+        this.animationStep = this.pauseAnimation ? 0 : Control.#getInitialAnimationStep()
         this.animationDriver += this.animationStep
 
         if (!this.pauseCameraFly) {

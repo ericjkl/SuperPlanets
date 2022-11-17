@@ -21,6 +21,9 @@ pointLight.position.z = 150;
 
 const ambientLight = new THREE.AmbientLight(0x2a2a2a);
 controls.scene.add(pointLight, ambientLight);
+controls.onAmbientLightingBrightnessChange = () => {
+  ambientLight.intensity = controls.ambientLightingBrightness
+}
 
 // Helpers
 
@@ -46,6 +49,20 @@ function addComet() {
 const comets = []
 for (let i = 0; i < controls.meteoriteAmount; i++) {
   comets.push(addComet());
+}
+
+controls.onMeteoriteAmountChange = () => {
+  const difference = controls.meteoriteAmount - comets.length
+  if (difference > 0) {
+    for (let i = 0; i < difference; i++) {
+      comets.push(addComet())
+    }
+  } else {
+    const deleted = comets.splice(comets.length+difference, -difference)
+    deleted.forEach((el)=>{
+      controls.scene.remove(el.ref)
+    })
+  }
 }
 
 function updateComets(t) {
