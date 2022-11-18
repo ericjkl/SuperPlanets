@@ -19,11 +19,14 @@ export default class Control {
         this.onMeteoriteAmountChange = null;
         this.ambientLightingBrightness = 1;
         this.onAmbientLightingBrightnessChange = null;
+        this.movementAcceleration = Control.#getInitialMovementAcceleration()
         this.mixers = [];
         this.#addListeners()
     }
 
     static #getInitialAnimationStep() {return 0.005}
+
+    static #getInitialMovementAcceleration() {return 0.5}
 
     static #getCamera() {
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
@@ -72,7 +75,22 @@ export default class Control {
             if (event.code === "Space") {
                 this.pauseAnimation = !this.pauseAnimation
             }
+            if (event.code === "KeyW" ||
+                event.code === "KeyA" ||
+                event.code === "KeyS" ||
+                event.code === "KeyD") {
+                this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1/this.movementAcceleration*10) * 0.05
+            }
         };
+
+        window.onkeyup = (event) => {
+            if (event.code === "KeyW" ||
+                event.code === "KeyA" ||
+                event.code === "KeyS" ||
+                event.code === "KeyD") {
+                this.movementAcceleration = Control.#getInitialMovementAcceleration()
+            }
+        }
 
         const animationSpeedSlider = document.getElementById("animationSpeedSlider")
         animationSpeedSlider.oninput = ()=> {
@@ -126,6 +144,7 @@ export default class Control {
         this.animationDriver += this.animationStep
 
         if (!this.pauseCameraFly) {
+            this.flyControls.movementSpeed = this.movementAcceleration
             this.flyControls.update(1);
         }
     }
