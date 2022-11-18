@@ -1,5 +1,5 @@
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-
+import {AnimationMixer} from "three";
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
  */
@@ -12,6 +12,7 @@ export default class LoadedObject {
         const loader = new GLTFLoader();
         loader.load( config.gltfPath, (gltf) => {
             this.ref = gltf.scene
+            this.gltf = gltf
             onLoad()
         }, null, (error) => {console.error(error)});
     }

@@ -24,6 +24,12 @@ canvas {
   height: 100%;
   padding: 20px;
   color: white;
+  transition: opacity 0.15s ease-in-out;
+}
+
+#settings.hidden {
+  opacity: 0;
+  visibility: hidden;
 }
 
 .key {
