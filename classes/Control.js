@@ -44,84 +44,8 @@ export default class Control {
         return renderer
     }
 
-    // moveSpaceship() {
-    //     console.log("change detected");
-    //     console.log(this.scene);
-
-    //     if (this.spaceShipAktivated == true) {
-    //         this.scene.children[this.spaceShipId].position.y = this.camera.position.y - 10;
-    //         this.scene.children[this.spaceShipId].position.z = this.camera.position.z - 30;
-    //         this.scene.children[this.spaceShipId].position.x = this.camera.position.x;
-    //     }
-    // }
-
     #addListeners() {
-        // this.flyControls.addEventListener("change", function moveSpaceship() {
-        //     console.log(this);
-        //     if (this.spaceShipAktivated == true) {
-        //         this.scene.children[this.spaceShipId].position.y = this.camera.position.y - 10;
-        //         this.scene.children[this.spaceShipId].position.z = this.camera.position.z - 30;
-        //         this.scene.children[this.spaceShipId].position.x = this.camera.position.x;
-        //     }
-        // })
-
-        // this.flyControls.change = () => {
-        //     if (this.spaceShipAktivated == true) {
-        //         this.scene.children[this.spaceShipId].position.y = this.camera.position.y - 10;
-        //         this.scene.children[this.spaceShipId].position.z = this.camera.position.z - 30;
-        //         this.scene.children[this.spaceShipId].position.x = this.camera.position.x;
-        //     }
-        // };
-
-        // window.onkeyup = (event) => {
-        //     if (event.code === "KeyW") {
-        //         this.scene.children[this.spaceShipId].rotation.x = 0.0;
-        //     }
-        //     if (event.code === "KeyS") {
-        //         this.scene.children[this.spaceShipId].rotation.x = -0.0;
-        //     }
-        //     if (event.code === "KeyA") {
-        //         this.scene.children[this.spaceShipId].rotation.z = 0.0;
-        //         this.scene.children[this.spaceShipId].rotation.y = 0.0;
-
-        //     }
-        //     if (event.code === "KeyD") {
-        //         this.scene.children[this.spaceShipId].rotation.z = -0.0;
-        //         this.scene.children[this.spaceShipId].rotation.y = -0.0;
-        //     }
-        // };
         window.onkeydown = (event) => {
-            //     if (event.code === "KeyW") {
-            //         if (this.spaceShipAktivated == true) {
-            //             this.scene.children[this.spaceShipId].rotation.x = 1 / 4 * Math.PI;
-            //         }
-            //     }
-            //     if (event.code === "KeyS") {
-            //         if (this.spaceShipAktivated == true) {
-            //             this.scene.children[this.spaceShipId].rotation.x = -1 / 4 * Math.PI;
-            //         }
-            //     }
-            //     if (event.code === "KeyA") {
-            //         if (this.spaceShipAktivated == true) {
-            //             this.scene.children[this.spaceShipId].rotation.z = 1 / 4 * Math.PI;
-            //             this.scene.children[this.spaceShipId].rotation.y = 1 / 4 * Math.PI;
-            //         }
-
-            //     }
-            //     if (event.code === "KeyD") {
-            //         if (this.spaceShipAktivated == true) {
-            //             this.scene.children[this.spaceShipId].rotation.z = -1 / 4 * Math.PI;
-            //             this.scene.children[this.spaceShipId].rotation.y = -1 / 4 * Math.PI;
-            //         }
-
-            //     }
-            //     if (event.code === "KeyU") {
-            //         this.scene.children[this.spaceShipId].rotation.y = 1 / 4 * Math.PI;
-            //     }
-            //     if (event.code === "KeyJ") {
-            //         this.scene.children[this.spaceShipId].rotation.y = -1 / 4 * Math.PI;
-            //     }
-
             if (event.code === "KeyC") {
                 this.pauseCameraFly = !this.pauseCameraFly
             }

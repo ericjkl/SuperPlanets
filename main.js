@@ -41,14 +41,9 @@ controls.flyControls.addEventListener("change", function moveSpaceship() {
     controls.scene.children[controls.spaceShipId].position.y = controls.camera.position.y + (direction.y * 10)
     controls.scene.children[controls.spaceShipId].position.z = controls.camera.position.z + (direction.z * 10)
 
-
-    // controls.scene.children[controls.spaceShipId].rotation.x = controls.camera.rotation.x;
-    // controls.scene.children[controls.spaceShipId].rotation.y = controls.camera.rotation.y;
-    // controls.scene.children[controls.spaceShipId].rotation.z = controls.camera.rotation.z;
   }
 })
 
-// const controls = new OrbitControls(camera, renderer.domElement);
 
 function addComet() {
   const geometry = new THREE.SphereGeometry(0.4, 24, 24);
@@ -138,42 +133,10 @@ const ioMoon = new Planet({
   }
 }, controls.scene)
 
-// const geometry = new THREE.BoxGeometry(5, 5, 5);
-// const material = new THREE.MeshBasicMaterial({ color: 0x00ff00 });
-// const cube = new THREE.Mesh(geometry, material);
-// cube.position.x = 0;
-// cube.position.y = 0;
-// cube.position.z = 0;
-// cube.name = "raumschiff";
-// controls.scene.add(cube);
-
 const spaceship = new Planet({
   gltfPath: 'assets/licht5.glb',
   initialScale: 100,
 }, controls.scene)
-
-
-// var ballGeo = new THREE.SphereGeometry(10, 35, 35);
-// var material = new THREE.MeshPhongMaterial({ color: 0xF7FE2E });
-// var ball = new THREE.Mesh(ballGeo, material);
-
-// var pendulumGeo = new THREE.CylinderGeometry(1, 1, 50, 16);
-// ball.updateMatrix();
-// pendulumGeo.merge(ball.geometry, ball.matrix);
-
-// var pendulum = new THREE.Mesh(pendulumGeo, material);
-// controls.scene.add(pendulum);
-
-
-// const earth = new Planet({
-//   gltfPath: 'assets/earth.glb',
-//   initialScale: 1000,
-//   castShadow: true,
-//   receiveShadow: true,
-// }, controls.scene)
-
-
-// x
 
 //teapot
 // const teapotGeometry = new TeapotGeometry(20, 16);
