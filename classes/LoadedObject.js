@@ -1,4 +1,4 @@
-import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
@@ -10,9 +10,15 @@ export default class LoadedObject {
      */
     constructor(config, onLoad) {
         const loader = new GLTFLoader();
-        loader.load( config.gltfPath, (gltf) => {
+        loader.load(config.gltfPath, (gltf) => {
             this.ref = gltf.scene
+            this.ref.traverse(function (node) {
+                if (node.isMesh) {
+                    node.castShadow = true;
+                    node.receiveShadow = true; //maybe not needed
+                }
+            });
             onLoad()
-        }, null, (error) => {console.error(error)});
+        }, null, (error) => { console.error(error) });
     }
 }
