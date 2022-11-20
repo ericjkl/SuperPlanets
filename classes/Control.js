@@ -15,16 +15,18 @@ export default class Control {
         this.animationDriver = 0
         this.animationStep = Control.#getInitialAnimationStep()
         this.initialAnimationStep = this.animationStep
-        this.meteoriteAmount = 200
+        this.meteoriteAmount = 20
         this.onMeteoriteAmountChange = null;
         this.ambientLightingBrightness = 1;
         this.onAmbientLightingBrightnessChange = null;
         this.movementAcceleration = Control.#getInitialMovementAcceleration()
         this.mixers = [];
         this.#addListeners()
+        this.spaceShipId = 0;
+        this.spaceShipAktivated = false;
     }
 
-    static #getInitialAnimationStep() {return 0.005}
+    static #getInitialAnimationStep() { return 0.005 }
 
     static #getInitialMovementAcceleration() {return 0.5}
 
@@ -49,18 +51,6 @@ export default class Control {
 
     #addListeners() {
         window.onkeydown = (event) => {
-            if (event.code === "ArrowUp") {
-                this.camera.position.z += -1;
-            }
-            if (event.code === "ArrowDown") {
-                this.camera.position.z += 1;
-            }
-            if (event.code === "ArrowLeft") {
-                this.camera.position.y += -1;
-            }
-            if (event.code === "ArrowRight") {
-                this.camera.position.y += 1;
-            }
             if (event.code === "KeyC") {
                 this.pauseCameraFly = !this.pauseCameraFly
             }
@@ -75,6 +65,25 @@ export default class Control {
             if (event.code === "Space") {
                 this.pauseAnimation = !this.pauseAnimation
             }
+            if (event.code === "KeyB") {
+                console.log(this.scene)
+                this.pauseCameraFly = false
+                if (this.spaceShipAktivated == false) {
+                    for (let i = 0; i < this.scene.children.length; i++) {
+                        if (this.scene.children[i].name == "Scene") {
+                            this.spaceShipId = i;
+                        }
+                    }
+                    console.log("spaceID: " + this.spaceShipId);
+                    this.spaceShipAktivated = true;
+                    this.camera.position.z = this.scene.children[this.spaceShipId].position.z + 30
+                    this.camera.position.y = this.scene.children[this.spaceShipId].position.y + 10
+                    this.camera.position.x = this.scene.children[this.spaceShipId].position.x
+                }
+
+                else {
+                    this.spaceShipAktivated = false;
+                }
             if (event.code === "KeyW" ||
                 event.code === "KeyA" ||
                 event.code === "KeyS" ||
@@ -93,7 +102,7 @@ export default class Control {
         }
 
         const animationSpeedSlider = document.getElementById("animationSpeedSlider")
-        animationSpeedSlider.oninput = ()=> {
+        animationSpeedSlider.oninput = () => {
             const initialAnimationStep = Control.#getInitialAnimationStep()
             const factor = animationSpeedSlider.value / 100
             const animationSpeed = factor > 1 ? factor ** 10 : factor
@@ -101,7 +110,7 @@ export default class Control {
         }
 
         const meteoriteAmountSlider = document.getElementById("meteoriteAmountSlider")
-        meteoriteAmountSlider.oninput = ()=> {
+        meteoriteAmountSlider.oninput = () => {
             this.meteoriteAmount = (meteoriteAmountSlider.value) ** 1.5 + 200
             this.onMeteoriteAmountChange()
         }
@@ -150,10 +159,10 @@ export default class Control {
     }
 
     runAnimation(animation) {
-        requestAnimationFrame(()=>{
+        requestAnimationFrame(() => {
             animation()
             this.updateScene()
-            requestAnimationFrame(()=>this.runAnimation(animation))
+            requestAnimationFrame(() => this.runAnimation(animation))
         })
     }
 }
