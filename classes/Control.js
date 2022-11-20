@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import {FlyControls} from "three/examples/jsm/controls/FlyControls";
 import {AnimationMixer, LoopOnce} from "three";
-import {AnimationAction} from "three/src/animation/AnimationAction";
 
 export default class Control {
     constructor() {
@@ -79,11 +78,10 @@ export default class Control {
                     this.camera.position.z = this.scene.children[this.spaceShipId].position.z + 30
                     this.camera.position.y = this.scene.children[this.spaceShipId].position.y + 10
                     this.camera.position.x = this.scene.children[this.spaceShipId].position.x
-                }
-
-                else {
+                } else {
                     this.spaceShipAktivated = false;
                 }
+            }
             if (event.code === "KeyW" ||
                 event.code === "KeyA" ||
                 event.code === "KeyS" ||
