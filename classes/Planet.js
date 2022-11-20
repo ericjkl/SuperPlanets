@@ -26,7 +26,7 @@ export default class Planet {
         if (config.gltfPath) {
             this.#loadGLTF(config, ()=> {
                 this.#setupObject(config, scene)
-                onGLTFLoaded()
+                if (onGLTFLoaded) onGLTFLoaded()
             })
         } else {
             this.#createFromConfig(config)
