@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import LoadedObject from "./LoadedObject";
 import scene from "three/examples/jsm/offscreen/scene";
-import {Sphere} from "three";
 
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
@@ -26,9 +25,9 @@ export default class Planet {
      */
     constructor(config, scene, onGLTFLoaded) {
         if (config.gltfPath) {
-            this.#loadGLTF(config, ()=> {
+            this.#loadGLTF(config, () => {
                 this.#setupObject(config, scene)
-                onGLTFLoaded()
+                //onGLTFLoaded() //??
             })
         } else {
             this.#createFromConfig(config)
@@ -37,7 +36,7 @@ export default class Planet {
     }
 
     #loadGLTF(config, onLoad) {
-        const gltfObject = new LoadedObject(config, ()=>{
+        const gltfObject = new LoadedObject(config, () => {
             this.ref = gltfObject.ref
             this.gltf = gltfObject.gltf
             onLoad()
