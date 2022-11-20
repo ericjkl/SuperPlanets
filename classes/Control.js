@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import {FlyControls} from "three/examples/jsm/controls/FlyControls";
 import {AnimationMixer, LoopOnce} from "three";
-import {AnimationAction} from "three/src/animation/AnimationAction";
 
 export default class Control {
     constructor() {

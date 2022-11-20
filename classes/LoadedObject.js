@@ -1,5 +1,4 @@
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
-import {AnimationMixer} from "three";
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
  */

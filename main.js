@@ -1,8 +1,6 @@
 import './style.css';
 import * as THREE from 'three';
-import {FlyControls} from 'three/examples/jsm/controls/FlyControls';
-import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
-import {MeshBasicMaterial, MeshPhongMaterial, Raycaster, Sphere, Vector2, Vector3} from "three";
+import {MeshBasicMaterial, Raycaster, Sphere, Vector2, Vector3} from "three";
 import Planet from "./classes/Planet";
 import Control from "./classes/Control";
 
@@ -25,21 +23,13 @@ controls.onAmbientLightingBrightnessChange = () => {
     ambientLight.intensity = controls.ambientLightingBrightness
 }
 
-// Helpers
-
-const lightHelper = new THREE.PointLightHelper(pointLight)
-const gridHelper = new THREE.GridHelper(200, 50);
-controls.scene.add(lightHelper)
-
-// const controls = new OrbitControls(camera, renderer.domElement);
-
 function addComet(target) {
     /*const geometry = new THREE.SphereGeometry(0.4, 24, 24);
     const material = new THREE.MeshStandardMaterial({color: 0xffffff});
     const comet = new THREE.Mesh(geometry, material);*/
     const [x, y, z] = Array(3)
         .fill()
-        .map(() => THREE.MathUtils.randFloatSpread(300));
+        .map(() => THREE.MathUtils.randFloatSpread(500));
 
     const raycaster = new Raycaster(new Vector3(x, y, z), new Vector3(1, 1, 0).normalize());
     let intersectionPoint = new Vector3()
@@ -92,6 +82,15 @@ function updateComets(t) {
 }
 
 // Planets
+const spaceship = new Planet({
+    gltfPath: "assets/spaceship.glb",
+    initialPosition: {
+        x: 55,
+        y: 0,
+        z: -100
+    }
+}, controls.scene, ()=>console.log("loaded!"))
+
 const mars = new Planet({
     radius: 40,
     mapPath: 'assets/mars-8k.jpg',

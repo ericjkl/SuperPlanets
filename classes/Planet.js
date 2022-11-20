@@ -1,7 +1,5 @@
 import * as THREE from "three";
 import LoadedObject from "./LoadedObject";
-import scene from "three/examples/jsm/offscreen/scene";
-import {Sphere} from "three";
 
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
