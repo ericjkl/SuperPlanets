@@ -1,9 +1,11 @@
 import * as THREE from "three";
 import LoadedObject from "./LoadedObject";
 import scene from "three/examples/jsm/offscreen/scene";
+import {Sphere} from "three";
 
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
+ * @field {Object} gltf - gltf object if loaded from gltf file
  */
 export default class Planet {
 
@@ -20,10 +22,14 @@ export default class Planet {
      * @param {{x: number, y: number, z: number}} [config.initialPosition] - initial x,y,z
      *
      * @param {Object} scene - Three.js scene object to add the planet to
+     * @param {function} [onGLTFLoaded] - callback executed when GLTF object was loaded
      */
-    constructor(config, scene) {
+    constructor(config, scene, onGLTFLoaded) {
         if (config.gltfPath) {
-            this.#loadGLTF(config, ()=>this.#setupObject(config, scene))
+            this.#loadGLTF(config, ()=> {
+                this.#setupObject(config, scene)
+                onGLTFLoaded()
+            })
         } else {
             this.#createFromConfig(config)
             this.#setupObject(config, scene)
@@ -33,6 +39,7 @@ export default class Planet {
     #loadGLTF(config, onLoad) {
         const gltfObject = new LoadedObject(config, ()=>{
             this.ref = gltfObject.ref
+            this.gltf = gltfObject.gltf
             onLoad()
         })
     }
@@ -42,9 +49,10 @@ export default class Planet {
         const normalMap = config.normalMapPath ? new THREE.TextureLoader().load(config.normalMapPath) : null;
 
         const segments = config.segmentCount || 32
+        const Material = config.material || THREE.MeshPhongMaterial
         this.ref = new THREE.Mesh(
             new THREE.SphereGeometry(config.radius, segments, segments),
-            new THREE.MeshPhongMaterial({
+            new Material({
                 map: map,
                 normalMap: normalMap,
             })
@@ -59,9 +67,11 @@ export default class Planet {
             this.ref.position.y = config.initialPosition.y
             this.ref.position.z = config.initialPosition.z
         }
-
-        console.log("adding planet to scene: ", this.ref)
+        if (config.initialScale) {
+            this.ref.scale.x = config.initialScale
+            this.ref.scale.y = config.initialScale
+            this.ref.scale.z = config.initialScale
+        }
         scene.add(this.ref)
-
     }
 }

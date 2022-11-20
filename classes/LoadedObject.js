@@ -1,5 +1,6 @@
-import { GLTFLoader } from "three/examples/jsm/loaders/GLTFLoader";
 
+import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+import {AnimationMixer} from "three";
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
  */
@@ -18,6 +19,7 @@ export default class LoadedObject {
                     node.receiveShadow = true; //maybe not needed
                 }
             });
+            this.gltf = gltf
             onLoad()
         }, null, (error) => { console.error(error) });
     }
