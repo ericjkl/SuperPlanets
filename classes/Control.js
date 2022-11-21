@@ -79,18 +79,17 @@ export default class Control {
                     this.camera.position.z = this.scene.children[this.spaceShipId].position.z + 30
                     this.camera.position.y = this.scene.children[this.spaceShipId].position.y + 10
                     this.camera.position.x = this.scene.children[this.spaceShipId].position.x
-                }
-
-                else {
+                } else {
                     this.spaceShipAktivated = false;
                 }
-            if (event.code === "KeyW" ||
-                event.code === "KeyA" ||
-                event.code === "KeyS" ||
-                event.code === "KeyD") {
-                this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1/this.movementAcceleration*10) * 0.05
+                if (event.code === "KeyW" ||
+                    event.code === "KeyA" ||
+                    event.code === "KeyS" ||
+                    event.code === "KeyD") {
+                    this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1 / this.movementAcceleration * 10) * 0.05
+                }
             }
-        };
+        }
 
         window.onkeyup = (event) => {
             if (event.code === "KeyW" ||
