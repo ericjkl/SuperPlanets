@@ -147,10 +147,25 @@ const ioMoon = new Planet({
 }, controls.scene)
 
 
+
+//spaceship with headlights
+const spotLight = new THREE.SpotLight(0xffffffc, 1, 0, Math.PI/2);
+spotLight.position.x = 86.5;
+spotLight.position.z = -115;
+const spotLightHelper = new THREE.PointLightHelper(spotLight)
+const spaceshipGroup = new THREE.Group();
 const spaceship = new Planet({
-  gltfPath: 'assets/licht5.glb',
-  initialScale: 100,
-}, controls.scene)
+    gltfPath: 'assets/spaceship.glb',
+    initialScale: 1,
+    initialPosition: {x: 90, y: 0, z: -120}
+}, spaceshipGroup)
+spaceshipGroup.add(spotLight);
+spaceshipGroup.add(spotLightHelper);
+
+controls.scene.add(spaceshipGroup);
+
+//spaceshipGroup.position.x = 80
+//spaceshipGroup.position.z = -110
 
 //teapot
 // const teapotGeometry = new TeapotGeometry(20, 16);
