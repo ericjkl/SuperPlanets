@@ -32,42 +32,52 @@ const gridHelper = new THREE.GridHelper(200, 50);
 controls.scene.add(lightHelper)
 
 controls.flyControls.addEventListener("change", function moveSpaceship() {
-    if (controls.spaceShipAktivated == true) {
-        var direction = new THREE.Vector3();
+    if (controls.spaceShipAktivated === true) {
+        let direction = new THREE.Vector3();
         controls.camera.getWorldDirection(direction);
-        controls.scene.children[controls.spaceShipId].position.x = controls.camera.position.x + (direction.x * 10)
-        controls.scene.children[controls.spaceShipId].position.y = controls.camera.position.y + (direction.y * 10)
-        controls.scene.children[controls.spaceShipId].position.z = controls.camera.position.z + (direction.z * 10)
+        spaceship.position.x = controls.camera.position.x + (direction.x * 10)
+        spaceship.position.y = controls.camera.position.y + (direction.y * 10)
+        spaceship.position.z = controls.camera.position.z + (direction.z * 10)
 
+        spaceship.rotation.x = controls.camera.rotation.x// + Math.PI/2*direction.x;
+        spaceship.rotation.y = controls.camera.rotation.y - Math.PI;
+        spaceship.rotation.z = controls.camera.rotation.z// + Math.PI/2*direction.z;
 
-        if (controls.moveFor == true) {
-            controls.scene.children[controls.spaceShipId].rotation.x = controls.camera.rotation.x + 0.3;
-        }
-        if (controls.moveFor == false) {
-            controls.scene.children[controls.spaceShipId].rotation.x = controls.camera.rotation.x;
-        }
-
-        if (controls.moveBack == true) {
-            controls.scene.children[controls.spaceShipId].rotation.x = controls.camera.rotation.x - 0.3;
-        }
-        if (controls.moveBack == false) {
-            controls.scene.children[controls.spaceShipId].rotation.x = controls.camera.rotation.x;
-        }
-        if (controls.moveLeft == true) {
-            controls.scene.children[controls.spaceShipId].rotation.y = controls.camera.rotation.y + 0.3;
-        }
-        if (controls.moveLeft == false) {
-            controls.scene.children[controls.spaceShipId].rotation.y = controls.camera.rotation.y;
-        }
-
-        if (controls.moveRight == true) {
-            controls.scene.children[controls.spaceShipId].rotation.y = controls.camera.rotation.y - 0.3;
-        }
-        if (controls.moveRight == false) {
-            controls.scene.children[controls.spaceShipId].rotation.y = controls.camera.rotation.y;
-        }
-
-        controls.scene.children[controls.spaceShipId].rotation.z = controls.camera.rotation.z
+        console.log(spaceship.rotation)
+        // if (controls.moveFor === true) {
+        //     spaceship.rotation.x = controls.camera.rotation.x + 0.3;
+        // }
+        // if (controls.moveFor === false) {
+        //     spaceship.rotation.x = controls.camera.rotation.x;
+        // }
+        //
+        // if (controls.moveBack === true) {
+        //     spaceship.rotation.x = controls.camera.rotation.x - 0.3;
+        // }
+        // if (controls.moveBack === false) {
+        //     spaceship.rotation.x = controls.camera.rotation.x;
+        // }
+        //
+        // if (controls.moveLeft === true) {
+        //     spaceship.rotation.y = controls.camera.rotation.y + 0.3;
+        // }
+        // if (controls.moveLeft === false) {
+        //     spaceship.rotation.y = controls.camera.rotation.y;
+        // }
+        //
+        //
+        // spaceship.rotation.y = controls.moveRight ? controls.camera.rotation.y - 0.3 : controls.camera.rotation.y
+        //
+        //
+        // spaceship.rotation.z = controls.camera.rotation.z
+        // const dirNorm = direction.normalize()
+        // const dir = new Vector3()
+        // spaceship.getWorldDirection(dir)
+        // spaceship.rotation.x = - dir.x
+        // spaceship.rotation.y = - dir.y
+        // spaceship.rotation.z = - dir.z
+        // console.log(spaceship.rotation)
+        //spaceship.rotation.applyQuaternion( controls.camera.quaternion );
     }
 })
 
@@ -182,6 +192,33 @@ const mars = new Planet({
         z: -250
     }
 }, controls.scene)
+
+const venus = new Planet({
+    radius: 30,
+    mapPath: 'assets/8k_venus_surface.jpg',
+    segmentCount: 64,
+    castShadow: true,
+    receiveShadow: true,
+    initialPosition: {
+        x: 50,
+        y: 0,
+        z: 250
+    }
+}, controls.scene)
+
+const mars = new Planet({
+    radius: 20,
+    mapPath: 'assets/mars-8k.jpg',
+    normalMapPath: 'assets/mars-normal.png',
+    segmentCount: 64,
+    castShadow: true,
+    receiveShadow: true,
+    initialPosition: {
+        x: -50,
+        y: 0,
+        z: -250
+    }
+}, controls.scene)
 const marsSphere = new Sphere(mars.ref.position, 40)
 
 const moon = new Planet({
@@ -197,17 +234,6 @@ const moon = new Planet({
     }
 }, controls.scene)
 
-const spaceship = new Planet({
-    gltfPath: 'assets/spaceship.glb',
-    initialScale: 0.2,
-    castShadow: true,
-    receiveShadow: true,
-    initialPosition: {
-        x: -150,
-        y: 0,
-        z: 300
-    }
-}, controls.scene)
 
 const spaceship = new THREE.Group();
 const spaceshipModel = new Planet({
@@ -269,6 +295,10 @@ const spaceshipModel = new Planet({
     const secondCone = cone.clone()
     spaceship.add(secondCone);
     secondCone.position.x = - cone.position.x
+    
+    spaceship.scale.set(0.5, 0.5, 0.5)
+    //spaceship.rotation.x = Math.PI/4
+    console.log(spaceship)
 })
 
 //teapot
