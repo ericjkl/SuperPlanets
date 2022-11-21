@@ -31,45 +31,9 @@ controls.flyControls.addEventListener("change", function moveSpaceship() {
         spaceship.position.y = controls.camera.position.y + (direction.y * 10)
         spaceship.position.z = controls.camera.position.z + (direction.z * 10)
 
-        spaceship.rotation.x = controls.camera.rotation.x// + Math.PI/2*direction.x;
+        spaceship.rotation.x = controls.camera.rotation.x
         spaceship.rotation.y = controls.camera.rotation.y - Math.PI;
-        spaceship.rotation.z = controls.camera.rotation.z// + Math.PI/2*direction.z;
-
-        console.log(spaceship.rotation)
-        // if (controls.moveFor === true) {
-        //     spaceship.rotation.x = controls.camera.rotation.x + 0.3;
-        // }
-        // if (controls.moveFor === false) {
-        //     spaceship.rotation.x = controls.camera.rotation.x;
-        // }
-        //
-        // if (controls.moveBack === true) {
-        //     spaceship.rotation.x = controls.camera.rotation.x - 0.3;
-        // }
-        // if (controls.moveBack === false) {
-        //     spaceship.rotation.x = controls.camera.rotation.x;
-        // }
-        //
-        // if (controls.moveLeft === true) {
-        //     spaceship.rotation.y = controls.camera.rotation.y + 0.3;
-        // }
-        // if (controls.moveLeft === false) {
-        //     spaceship.rotation.y = controls.camera.rotation.y;
-        // }
-        //
-        //
-        // spaceship.rotation.y = controls.moveRight ? controls.camera.rotation.y - 0.3 : controls.camera.rotation.y
-        //
-        //
-        // spaceship.rotation.z = controls.camera.rotation.z
-        // const dirNorm = direction.normalize()
-        // const dir = new Vector3()
-        // spaceship.getWorldDirection(dir)
-        // spaceship.rotation.x = - dir.x
-        // spaceship.rotation.y = - dir.y
-        // spaceship.rotation.z = - dir.z
-        // console.log(spaceship.rotation)
-        //spaceship.rotation.applyQuaternion( controls.camera.quaternion );
+        spaceship.rotation.z = controls.camera.rotation.z
     }
 })
 
