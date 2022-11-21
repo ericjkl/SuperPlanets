@@ -1,7 +1,6 @@
 import * as THREE from "three";
 import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import { AnimationMixer, LoopOnce } from "three";
-import { AnimationAction } from "three/src/animation/AnimationAction";
 
 export default class Control {
     constructor() {
@@ -15,16 +14,19 @@ export default class Control {
         this.animationDriver = 0
         this.animationStep = Control.#getInitialAnimationStep()
         this.initialAnimationStep = this.animationStep
-        this.meteoriteAmount = 50
+        this.meteoriteAmount = 20
         this.onMeteoriteAmountChange = null;
-        this.ambientLightingBrightness = 1;
+        this.ambientLightingBrightness = 100;
         this.onAmbientLightingBrightnessChange = null;
         this.movementAcceleration = Control.#getInitialMovementAcceleration()
         this.mixers = [];
         this.#addListeners()
         this.spaceShipId = 0;
         this.spaceShipAktivated = false;
-        this.keyPressed = false;
+        this.moveFor = false;
+        this.moveBack = false;
+        this.moveLeft = false;
+        this.moveRight = false;
     }
 
     static #getInitialAnimationStep() { return 0.005 }
@@ -34,8 +36,10 @@ export default class Control {
     static #getCamera() {
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.y = 0;
-        camera.position.x = 200;
-        camera.position.z = 550;
+        camera.position.x = -180;
+        camera.position.z = 335;
+        camera.rotation.y = -0.8;
+
         return camera
     }
 
@@ -51,15 +55,18 @@ export default class Control {
 
     #addListeners() {
         window.onkeydown = (event) => {
-            // if (event.code === "KeyW") {
-            //     this.scene.children[this.spaceShipId].rotation.x += Math.PI / 6;
-            // } if (event.code === "KeyA") {
-            //     this.scene.children[this.spaceShipId].rotation.y += Math.PI / 6;
-            // } if (event.code === "KeyS") {
-            //     this.scene.children[this.spaceShipId].rotation.x -= Math.PI / 6;
-            // } if (event.code === "KeyD") {
-            //     this.scene.children[this.spaceShipId].rotation.y -= Math.PI / 6;
-            // }
+            if (event.code === "KeyW") {
+                this.moveFor = true;
+            }
+            if (event.code === "KeyS") {
+                this.moveBack = true;
+            }
+            if (event.code === "KeyA") {
+                this.moveLeft = true;
+            }
+            if (event.code === "KeyD") {
+                this.moveRight = true;
+            }
 
             if (event.code === "KeyC") {
                 this.pauseCameraFly = !this.pauseCameraFly
@@ -74,8 +81,10 @@ export default class Control {
             }
             if (event.code === "Space") {
                 this.pauseAnimation = !this.pauseAnimation
+                console.log(this.scene)
             }
-            if (event.code === "KeyB") {
+            if (event.code === "KeyP") {
+                console.log(this.scene)
                 this.pauseCameraFly = false
                 if (this.spaceShipAktivated == false) {
                     for (let i = 0; i < this.scene.children.length; i++) {
@@ -83,10 +92,9 @@ export default class Control {
                             this.spaceShipId = i;
                         }
                     }
+                    console.log("spaceID: " + this.spaceShipId);
                     this.spaceShipAktivated = true;
-                }
-
-                else {
+                } else {
                     this.spaceShipAktivated = false;
                 }
             }
@@ -94,61 +102,63 @@ export default class Control {
                 event.code === "KeyA" ||
                 event.code === "KeyS" ||
                 event.code === "KeyD") {
-                this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1 / this.movementAcceleration * 10) * 0.2
+                this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1 / this.movementAcceleration * 10) * 0.05
+            }
+        };
+
+        window.onkeyup = (event) => {
+            if (event.code === "KeyW" ||
+                event.code === "KeyA" ||
+                event.code === "KeyS" ||
+                event.code === "KeyD") {
+                this.movementAcceleration = Control.#getInitialMovementAcceleration()
             }
 
-            window.onkeyup = (event) => {
-                console.log("key releasd");
-                if (event.code === "KeyW" ||
-                    event.code === "KeyA" ||
-                    event.code === "KeyS" ||
-                    event.code === "KeyD") {
-                    this.movementAcceleration = Control.#getInitialMovementAcceleration()
-                }
-
-                // if (event.code === "KeyW") {
-                //     this.scene.children[this.spaceShipId].rotation.x -= Math.PI / 6;
-                // } if (event.code === "KeyA") {
-                //     this.scene.children[this.spaceShipId].rotation.y -= Math.PI / 6;
-                // } if (event.code === "KeyS") {
-                //     this.scene.children[this.spaceShipId].rotation.x += Math.PI / 6;
-                // } if (event.code === "KeyD") {
-                //     this.scene.children[this.spaceShipId].rotation.y += Math.PI / 6;
-                // }
+            if (event.code === "KeyW") {
+                this.moveFor = false;
             }
-
-            const animationSpeedSlider = document.getElementById("animationSpeedSlider")
-            animationSpeedSlider.oninput = () => {
-                const initialAnimationStep = Control.#getInitialAnimationStep()
-                const factor = animationSpeedSlider.value / 100
-                const animationSpeed = factor > 1 ? factor ** 10 : factor
-                this.animationStep = initialAnimationStep * animationSpeed
+            if (event.code === "KeyS") {
+                this.moveBack = false;
             }
-
-            const meteoriteAmountSlider = document.getElementById("meteoriteAmountSlider")
-            meteoriteAmountSlider.oninput = () => {
-                this.meteoriteAmount = (meteoriteAmountSlider.value) ** 1.5 + 200
-                this.onMeteoriteAmountChange()
+            if (event.code === "KeyA") {
+                this.moveLeft = false;
             }
-
-            const ambientBrightnessSlider = document.getElementById("ambientBrightnessSlider")
-            ambientBrightnessSlider.oninput = () => {
-                const factor = ambientBrightnessSlider.value
-                this.ambientLightingBrightness = factor > 1 ? factor ** 4 : factor
-                this.onAmbientLightingBrightnessChange()
+            if (event.code === "KeyD") {
+                this.moveRight = false;
             }
+        }
+
+        const animationSpeedSlider = document.getElementById("animationSpeedSlider")
+        animationSpeedSlider.oninput = () => {
+            const initialAnimationStep = Control.#getInitialAnimationStep()
+            const factor = animationSpeedSlider.value / 100
+            const animationSpeed = factor > 1 ? factor ** 10 : factor
+            this.animationStep = initialAnimationStep * animationSpeed
+        }
+
+        const meteoriteAmountSlider = document.getElementById("meteoriteAmountSlider")
+        meteoriteAmountSlider.oninput = () => {
+            this.meteoriteAmount = (meteoriteAmountSlider.value) ** 1.5 + 200
+            this.onMeteoriteAmountChange()
+        }
+
+        const ambientBrightnessSlider = document.getElementById("ambientBrightnessSlider")
+        ambientBrightnessSlider.oninput = () => {
+            const factor = ambientBrightnessSlider.value
+            this.ambientLightingBrightness = factor > 1 ? factor ** 4 : factor
+            this.onAmbientLightingBrightnessChange()
         }
     }
 
     addMixer(gltfObj, onFinished) {
-        console.log("adding mixer");
-        const mixer = new AnimationMixer(gltfObj.ref);
+        console.log("adding mixer")
+        const mixer = new AnimationMixer(gltfObj.ref)
         gltfObj.gltf.animations.forEach((animation) => {
             const action = mixer.clipAction(animation);
             action.timeScale = this.animationStep * 100
             action.setLoop(LoopOnce, 1)
             action.play();
-        });
+        })
         mixer.addEventListener('finished', () => onFinished());
         this.mixers.push(mixer)
     }
