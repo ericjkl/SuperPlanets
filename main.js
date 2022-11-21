@@ -1,9 +1,9 @@
 import './style.css';
 import * as THREE from 'three';
-import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry';
-import { FlyControls } from 'three/examples/jsm/controls/FlyControls';
-import { GLTFLoader } from 'three/examples/jsm/loaders/GLTFLoader.js';
-import { MeshBasicMaterial, MeshPhongMaterial, Raycaster, Sphere, Vector2, Vector3 } from "three";
+import {TeapotGeometry} from 'three/examples/jsm/geometries/TeapotGeometry';
+import {FlyControls} from 'three/examples/jsm/controls/FlyControls';
+import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
+import {MeshBasicMaterial, MeshPhongMaterial, Raycaster, Sphere, Vector2, Vector3} from "three";
 import Planet from "./classes/Planet";
 import Control from "./classes/Control";
 
@@ -35,10 +35,10 @@ controls.flyControls.addEventListener("change", function moveSpaceship() {
     if (controls.spaceShipAktivated == true) {
         var direction = new THREE.Vector3();
         controls.camera.getWorldDirection(direction);
-
         controls.scene.children[controls.spaceShipId].position.x = controls.camera.position.x + (direction.x * 10)
         controls.scene.children[controls.spaceShipId].position.y = controls.camera.position.y + (direction.y * 10)
         controls.scene.children[controls.spaceShipId].position.z = controls.camera.position.z + (direction.z * 10)
+
 
         if (controls.moveFor == true) {
             controls.scene.children[controls.spaceShipId].rotation.x = controls.camera.rotation.x + 0.3;
@@ -71,7 +71,6 @@ controls.flyControls.addEventListener("change", function moveSpaceship() {
     }
 })
 
-
 function addComet(target) {
     /*const geometry = new THREE.SphereGeometry(0.4, 24, 24);
     const material = new THREE.MeshStandardMaterial({color: 0xffffff});
@@ -87,7 +86,7 @@ function addComet(target) {
     const comet = new Planet({
         gltfPath: "assets/comet-explosion.glb",
         initialScale: 0.3,
-        initialPosition: { x: x, y: y, z: z }
+        initialPosition: {x: x, y: y, z: z}
     }, controls.scene, () => {
         target.push({
             comet: comet,
@@ -210,6 +209,67 @@ const spaceship = new Planet({
     }
 }, controls.scene)
 
+const spaceship = new THREE.Group();
+const spaceshipModel = new Planet({
+    gltfPath: 'assets/spaceship.glb',
+}, false, () => {
+    const spotLight = new THREE.SpotLight(0xffffff, 1, 0, Math.PI/64);
+    //const spotLightHelper = new THREE.SpotLightHelper(spotLight)
+    spaceship.add(spotLight);
+    //controls.scene.add(spotLightHelper);
+    spaceship.add(spaceshipModel.ref);
+
+    controls.scene.add(spaceship);
+    spaceship.position.x = 100
+    spaceship.position.z = -100
+
+    spotLight.rotation.x = -Math.PI / 2
+    spotLight.position.x += 1.5
+    spotLight.position.y -= 1
+    spotLight.position.z += 3
+
+    const secondSpotLight = spotLight.clone()
+    spaceship.add(secondSpotLight)
+
+    secondSpotLight.position.x = - spotLight.position.x
+
+    const geometry = new THREE.ConeGeometry(3, 50, 32, 1, true);
+    const material = new THREE.ShaderMaterial({
+        transparent: true,
+        opacity: 0.1,
+        uniforms: {
+            color: {
+                value: new THREE.Color("white")
+            },
+        },
+        vertexShader: `
+            varying vec2 vUv;
+        
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 color;
+            varying vec2 vUv;
+            float a = 3.0;
+            
+            void main() {
+                float alpha = smoothstep(0.0, 1.0, vUv.y);
+                gl_FragColor = vec4(color, alpha/a);
+            }
+        `,
+    });
+    const cone = new THREE.Mesh(geometry, material);
+    console.log(cone)
+    spaceship.add(cone);
+    cone.position.set(spotLight.position.x, spotLight.position.y, spotLight.position.z+23)
+    cone.rotation.set(spotLight.rotation.x, spotLight.rotation.y, spotLight.rotation.z)
+    const secondCone = cone.clone()
+    spaceship.add(secondCone);
+    secondCone.position.x = - cone.position.x
+})
 
 //teapot
 const teapotGeometry = new TeapotGeometry(1, 16);

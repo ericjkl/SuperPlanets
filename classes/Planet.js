@@ -1,6 +1,5 @@
 import * as THREE from "three";
 import LoadedObject from "./LoadedObject";
-import scene from "three/examples/jsm/offscreen/scene";
 
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
@@ -20,14 +19,14 @@ export default class Planet {
      * @param {boolean} [config.receiveShadow = false] - defining if the planet should receive shadows
      * @param {{x: number, y: number, z: number}} [config.initialPosition] - initial x,y,z
      *
-     * @param {Object} scene - Three.js scene object to add the planet to
+     * @param {Object} [scene] - Three.js scene object to add the planet to
      * @param {function} [onGLTFLoaded] - callback executed when GLTF object was loaded
      */
     constructor(config, scene, onGLTFLoaded) {
         if (config.gltfPath) {
             this.#loadGLTF(config, () => {
                 this.#setupObject(config, scene)
-                //onGLTFLoaded() //??
+                if (onGLTFLoaded) onGLTFLoaded()
             })
         } else {
             this.#createFromConfig(config)
@@ -71,6 +70,6 @@ export default class Planet {
             this.ref.scale.y = config.initialScale
             this.ref.scale.z = config.initialScale
         }
-        scene.add(this.ref)
+        if (scene) scene.add(this.ref)
     }
 }

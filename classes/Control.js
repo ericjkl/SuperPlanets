@@ -97,14 +97,14 @@ export default class Control {
                 } else {
                     this.spaceShipAktivated = false;
                 }
+                if (event.code === "KeyW" ||
+                    event.code === "KeyA" ||
+                    event.code === "KeyS" ||
+                    event.code === "KeyD") {
+                    this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1 / this.movementAcceleration * 10) * 0.05
+                }
             }
-            if (event.code === "KeyW" ||
-                event.code === "KeyA" ||
-                event.code === "KeyS" ||
-                event.code === "KeyD") {
-                this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1 / this.movementAcceleration * 10) * 0.05
-            }
-        };
+        }
 
         window.onkeyup = (event) => {
             if (event.code === "KeyW" ||
