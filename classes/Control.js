@@ -2,6 +2,28 @@ import * as THREE from "three";
 import { FlyControls } from "three/examples/jsm/controls/FlyControls";
 import { AnimationMixer, LoopOnce } from "three";
 
+/**
+ * @field {Object} scene - reference to the ThreeJS scene, main parent for all objects
+ * @field {Object} camera - main camera
+ * @field {Object} renderer - ThreeJS renderer
+ * @field {Object} flyControls - ThreeJS flyControls
+ * @field {boolean} pauseCameraFly - when true, flyControls are not updated on render
+ * @field {boolean} pauseAnimation - when true, animationDriver is not updated on render
+ * @field {number} animationDriver - animations are played forward based on this value
+ * @field {number} animationStep - animationDriver is increased by this value on every render, defines the speed of animations
+ * @field {number} initialAnimationStep - default animation step for restoring initial animation speed
+ * @field {number} meteoriteAmount - amount of comets generated in the scene
+ * @field {function} onMeteoriteAmountChange - called once the user sets a new meteoriteAmount by changing the slider value in the settings
+ * @field {number} ambientLightingBrightness - defining the brightness of the ambient light in the scene
+ * @field {function} onAmbientLightingBrightnessChange - called once the user sets a new ambientLightBrightness by changing the slider value in the settings
+ * @field {number} movementAcceleration - value defining the current acceleration factor for camera movements
+ * @field {Array} mixers - ThreeJS Animation mixers
+ * @field {boolean} spaceshipActive - when true, the spaceship is shown and acceleration effects are applied on the camera movements
+ * @field {boolean} moveFor - updated once the user presses the W key
+ * @field {boolean} moveBack - updated once the user presses the S key
+ * @field {boolean} moveLeft - updated once the user presses the A key
+ * @field {boolean} moveRight - updated once the user presses the D key
+ */
 export default class Control {
     constructor() {
         this.scene = new THREE.Scene()
@@ -21,18 +43,26 @@ export default class Control {
         this.movementAcceleration = Control.#getInitialMovementAcceleration()
         this.mixers = [];
         this.#addListeners()
-        this.spaceShipId = 0;
-        this.spaceShipAktivated = false;
+        this.spaceshipActive = false;
         this.moveFor = false;
         this.moveBack = false;
         this.moveLeft = false;
         this.moveRight = false;
     }
 
+    /**
+     * @returns {number} initialAnimationStep
+     */
     static #getInitialAnimationStep() { return 0.005 }
 
+    /**
+     * @returns {number} initialMovementAcceleration
+     */
     static #getInitialMovementAcceleration() { return 0.5 }
 
+    /**
+     * @returns {Object} camera - provides camera to be stored as {this.camera} reference
+     */
     static #getCamera() {
         const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 1000);
         camera.position.y = 0;
@@ -43,6 +73,9 @@ export default class Control {
         return camera
     }
 
+    /**
+     * @returns {Object} renderer - provides camera to be stored as {this.renderer} reference
+     */
     static #getRenderer() {
         const renderer = new THREE.WebGLRenderer({
             canvas: document.querySelector('#bg'),
@@ -53,6 +86,10 @@ export default class Control {
         return renderer
     }
 
+    /**
+     * @returns {undefined}
+     * adds event listeners
+     */
     #addListeners() {
         window.onkeydown = (event) => {
             if (event.code === "KeyW") {
@@ -81,28 +118,17 @@ export default class Control {
             }
             if (event.code === "Space") {
                 this.pauseAnimation = !this.pauseAnimation
-                console.log(this.scene)
             }
             if (event.code === "KeyP") {
-                console.log(this.scene)
                 this.pauseCameraFly = false
-                if (this.spaceShipAktivated == false) {
-                    for (let i = 0; i < this.scene.children.length; i++) {
-                        if (this.scene.children[i].name == "Sketchfab_Scene") {
-                            this.spaceShipId = i;
-                        }
-                    }
-                    console.log("spaceID: " + this.spaceShipId);
-                    this.spaceShipAktivated = true;
-                } else {
-                    this.spaceShipAktivated = false;
-                }
-                if (event.code === "KeyW" ||
-                    event.code === "KeyA" ||
-                    event.code === "KeyS" ||
-                    event.code === "KeyD") {
-                    this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1 / this.movementAcceleration * 10) * 0.05
-                }
+                this.spaceshipActive = !this.spaceshipActive
+            }
+            if (this.spaceshipActive &&
+                (event.code === "KeyW" ||
+                event.code === "KeyA" ||
+                event.code === "KeyS" ||
+                event.code === "KeyD")) {
+                this.movementAcceleration += Control.#getInitialMovementAcceleration() * (1 / this.movementAcceleration * 10) * 0.05
             }
         }
 
@@ -150,6 +176,11 @@ export default class Control {
         }
     }
 
+    /**
+     * @param {Object} gltfObj - gltf loaded object containing animations to play
+     * @param {function} onFinished - called once the animation is finished
+     * @returns {undefined}
+     */
     addMixer(gltfObj, onFinished) {
         console.log("adding mixer")
         const mixer = new AnimationMixer(gltfObj.ref)
@@ -163,10 +194,18 @@ export default class Control {
         this.mixers.push(mixer)
     }
 
+    /**
+     * @returns {undefined}
+     * renders the scene once
+     */
     render() {
         this.renderer.render(this.scene, this.camera)
     }
 
+    /**
+     * @returns {undefined}
+     * updates all relevant values for animations and the camera and renders the scene
+     */
     updateScene() {
         this.render()
         if (this.pauseAnimation) {
@@ -185,6 +224,10 @@ export default class Control {
         }
     }
 
+    /**
+     * @returns {undefined}
+     * starts the animation loop
+     */
     runAnimation(animation) {
         requestAnimationFrame(() => {
             animation()
