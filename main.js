@@ -192,6 +192,33 @@ const mars = new Planet({
         z: -250
     }
 }, controls.scene)
+
+const venus = new Planet({
+    radius: 30,
+    mapPath: 'assets/8k_venus_surface.jpg',
+    segmentCount: 64,
+    castShadow: true,
+    receiveShadow: true,
+    initialPosition: {
+        x: 50,
+        y: 0,
+        z: 250
+    }
+}, controls.scene)
+
+const mars = new Planet({
+    radius: 20,
+    mapPath: 'assets/mars-8k.jpg',
+    normalMapPath: 'assets/mars-normal.png',
+    segmentCount: 64,
+    castShadow: true,
+    receiveShadow: true,
+    initialPosition: {
+        x: -50,
+        y: 0,
+        z: -250
+    }
+}, controls.scene)
 const marsSphere = new Sphere(mars.ref.position, 40)
 
 const moon = new Planet({
@@ -206,6 +233,7 @@ const moon = new Planet({
         z: venus.ref.position + 50
     }
 }, controls.scene)
+
 
 const spaceship = new THREE.Group();
 const spaceshipModel = new Planet({
@@ -267,7 +295,7 @@ const spaceshipModel = new Planet({
     const secondCone = cone.clone()
     spaceship.add(secondCone);
     secondCone.position.x = - cone.position.x
-
+    
     spaceship.scale.set(0.5, 0.5, 0.5)
     //spaceship.rotation.x = Math.PI/4
     console.log(spaceship)

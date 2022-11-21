@@ -24,7 +24,7 @@ export default class Planet {
      */
     constructor(config, scene, onGLTFLoaded) {
         if (config.gltfPath) {
-            this.#loadGLTF(config, ()=> {
+            this.#loadGLTF(config, () => {
                 this.#setupObject(config, scene)
                 if (onGLTFLoaded) onGLTFLoaded()
             })
@@ -35,7 +35,7 @@ export default class Planet {
     }
 
     #loadGLTF(config, onLoad) {
-        const gltfObject = new LoadedObject(config, ()=>{
+        const gltfObject = new LoadedObject(config, () => {
             this.ref = gltfObject.ref
             this.gltf = gltfObject.gltf
             onLoad()
