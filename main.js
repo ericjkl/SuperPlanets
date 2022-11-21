@@ -1,6 +1,6 @@
 import './style.css';
 import * as THREE from 'three';
-import { TeapotGeometry } from 'three/examples/jsm/geometries/TeapotGeometry';
+import {TeapotGeometry} from 'three/examples/jsm/geometries/TeapotGeometry';
 import {FlyControls} from 'three/examples/jsm/controls/FlyControls';
 import {GLTFLoader} from 'three/examples/jsm/loaders/GLTFLoader.js';
 import {MeshBasicMaterial, MeshPhongMaterial, Raycaster, Sphere, Vector2, Vector3} from "three";
@@ -32,18 +32,17 @@ const gridHelper = new THREE.GridHelper(200, 50);
 controls.scene.add(lightHelper)
 
 controls.flyControls.addEventListener("change", function moveSpaceship() {
-  if (controls.spaceShipAktivated == true) {
-    var direction = new THREE.Vector3();
-    controls.camera.getWorldDirection(direction);
-    console.log(controls.scene.children[controls.spaceShipId])
+    if (controls.spaceShipAktivated == true) {
+        var direction = new THREE.Vector3();
+        controls.camera.getWorldDirection(direction);
+        console.log(controls.scene.children[controls.spaceShipId])
 
-    controls.scene.children[controls.spaceShipId].position.x = controls.camera.position.x + (direction.x * 10)
-    controls.scene.children[controls.spaceShipId].position.y = controls.camera.position.y + (direction.y * 10)
-    controls.scene.children[controls.spaceShipId].position.z = controls.camera.position.z + (direction.z * 10)
+        controls.scene.children[controls.spaceShipId].position.x = controls.camera.position.x + (direction.x * 10)
+        controls.scene.children[controls.spaceShipId].position.y = controls.camera.position.y + (direction.y * 10)
+        controls.scene.children[controls.spaceShipId].position.z = controls.camera.position.z + (direction.z * 10)
 
-  }
+    }
 })
-
 
 
 function addComet(target) {
@@ -62,8 +61,8 @@ function addComet(target) {
         gltfPath: "assets/comet-explosion.glb",
         initialScale: 0.3,
         initialPosition: {x: x, y: y, z: z}
-    }, controls.scene, ()=>{
-        target.push( {
+    }, controls.scene, () => {
+        target.push({
             comet: comet,
             initialPosition: {x: x, y: y, z: z},
             intersectionPoint: intersectionPoint
@@ -95,7 +94,7 @@ function updateComets(t) {
             comet.ref.position.x += controls.animationStep * 20
             comet.ref.position.y += controls.animationStep * 20
         } else {
-            controls.addMixer(comet, ()=>{
+            controls.addMixer(comet, () => {
                 controls.scene.remove(comet.ref)
                 addComet(comets)
             })
@@ -146,11 +145,68 @@ const ioMoon = new Planet({
     }
 }, controls.scene)
 
+const spaceship = new THREE.Group();
+const spaceshipModel = new Planet({
+    gltfPath: 'assets/spaceship.glb',
+}, false, () => {
+    const spotLight = new THREE.SpotLight(0xffffff, 1, 0, Math.PI/64);
+    //const spotLightHelper = new THREE.SpotLightHelper(spotLight)
+    spaceship.add(spotLight);
+    //controls.scene.add(spotLightHelper);
+    spaceship.add(spaceshipModel.ref);
 
-const spaceship = new Planet({
-  gltfPath: 'assets/licht5.glb',
-  initialScale: 100,
-}, controls.scene)
+    controls.scene.add(spaceship);
+    spaceship.position.x = 100
+    spaceship.position.z = -100
+
+    spotLight.rotation.x = -Math.PI / 2
+    spotLight.position.x += 1.5
+    spotLight.position.y -= 1
+    spotLight.position.z += 3
+
+    const secondSpotLight = spotLight.clone()
+    spaceship.add(secondSpotLight)
+
+    secondSpotLight.position.x = - spotLight.position.x
+
+    const geometry = new THREE.ConeGeometry(3, 50, 32, 1, true);
+    const material = new THREE.ShaderMaterial({
+        transparent: true,
+        opacity: 0.1,
+        uniforms: {
+            color: {
+                value: new THREE.Color("white")
+            },
+        },
+        vertexShader: `
+            varying vec2 vUv;
+        
+            void main() {
+              vUv = uv;
+              gl_Position = projectionMatrix * modelViewMatrix * vec4(position,1.0);
+            }
+        `,
+        fragmentShader: `
+            uniform vec3 color;
+            varying vec2 vUv;
+            float a = 3.0;
+            
+            void main() {
+                float alpha = smoothstep(0.0, 1.0, vUv.y);
+                gl_FragColor = vec4(color, alpha/a);
+            }
+        `,
+    });
+    const cone = new THREE.Mesh(geometry, material);
+    console.log(cone)
+    spaceship.add(cone);
+    cone.position.set(spotLight.position.x, spotLight.position.y, spotLight.position.z+23)
+    cone.rotation.set(spotLight.rotation.x, spotLight.rotation.y, spotLight.rotation.z)
+    const secondCone = cone.clone()
+    spaceship.add(secondCone);
+    secondCone.position.x = - cone.position.x
+})
+
 
 //teapot
 // const teapotGeometry = new TeapotGeometry(20, 16);
@@ -179,28 +235,28 @@ for (let i = 0; i < controls.meteoriteAmount; i++) {
 controls.runAnimation(animate)
 
 function animate() {
-  const t = controls.animationDriver
+    const t = controls.animationDriver
 
-  moon.ref.rotation.x = t * 2;
-  mars.ref.rotation.y = t / 5;
-  //teapot
-  // teapot.rotation.y = t / 2;
-  // teapot.rotation.x = t / 2;
+    moon.ref.rotation.x = t * 2;
+    mars.ref.rotation.y = t / 5;
+    //teapot
+    // teapot.rotation.y = t / 2;
+    // teapot.rotation.x = t / 2;
 
-  let alpha = Math.PI * t * 3
-  let beta = Math.PI * t * 0.05
-  ioMoon.ref.position.set(
-    mars.ref.position.x + Math.cos(alpha) * 58,
-    mars.ref.position.y + Math.sin(beta) * Math.sin(alpha) * 58,
-    mars.ref.position.z + Math.cos(beta) * Math.sin(alpha) * 58
-  )
+    let alpha = Math.PI * t * 3
+    let beta = Math.PI * t * 0.05
+    ioMoon.ref.position.set(
+        mars.ref.position.x + Math.cos(alpha) * 58,
+        mars.ref.position.y + Math.sin(beta) * Math.sin(alpha) * 58,
+        mars.ref.position.z + Math.cos(beta) * Math.sin(alpha) * 58
+    )
 
-  moon.ref.position.set(
-    mars.ref.position.x + (Math.sin(Math.PI * t / 5) * 80),
-    mars.ref.position.y,
-    mars.ref.position.z + (Math.cos(Math.PI * t / 5) * 80),
-  )
+    moon.ref.position.set(
+        mars.ref.position.x + (Math.sin(Math.PI * t / 5) * 80),
+        mars.ref.position.y,
+        mars.ref.position.z + (Math.cos(Math.PI * t / 5) * 80),
+    )
 
-  updateComets(t)
+    updateComets(t)
 
 }
