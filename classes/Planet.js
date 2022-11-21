@@ -6,7 +6,6 @@ import LoadedObject from "./LoadedObject";
  * @field {Object} gltf - gltf object if loaded from gltf file
  */
 export default class Planet {
-
     /**
      * @param {Object} config - create new planet object from config information or load from a gltf file
      * @param {string} [config.gltfPath] - path to load gltf/glb file from; if this field is given the planet is constructed from this file
@@ -34,6 +33,12 @@ export default class Planet {
         }
     }
 
+    /**
+     * @param {Object} config - object with config information passed in Planet constructor
+     * @param {function} onLoad - called once the gltf object was loaded
+     * @returns {undefined}
+     * initiates LoadedObject, adds the loaded object to the local reference and runs the onLoad callback
+     */
     #loadGLTF(config, onLoad) {
         const gltfObject = new LoadedObject(config, () => {
             this.ref = gltfObject.ref
@@ -42,6 +47,11 @@ export default class Planet {
         })
     }
 
+    /**
+     * @param {Object} config - object with config information passed in Planet constructor
+     * @returns {undefined}
+     * creates the Planet from config information
+     */
     #createFromConfig(config) {
         const map = config.mapPath ? new THREE.TextureLoader().load(config.mapPath) : null;
         const normalMap = config.normalMapPath ? new THREE.TextureLoader().load(config.normalMapPath) : null;
@@ -57,6 +67,12 @@ export default class Planet {
         );
     }
 
+    /**
+     * @param {Object} config - object with config information passed in Planet constructor
+     * @param {Object} [scene] - scene to apply created object to
+     * @returns {undefined}
+     * sets up object properties and adds object to scene if available
+     */
     #setupObject(config, scene) {
         if (config.castShadow) this.ref.castShadow = config.castShadow;
         if (config.receiveShadow) this.ref.receiveShadow = config.receiveShadow;

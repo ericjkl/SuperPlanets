@@ -1,7 +1,8 @@
-
 import {GLTFLoader} from "three/examples/jsm/loaders/GLTFLoader";
+
 /**
  * @field {Object} ref - reference to the Three.js Mesh object of the planet
+ * @field {Object} gltf - gltf object from GLTFLoader
  */
 export default class LoadedObject {
     /**
@@ -15,7 +16,7 @@ export default class LoadedObject {
             this.ref.traverse(function (node) {
                 if (node.isMesh) {
                     node.castShadow = true;
-                    node.receiveShadow = true; //maybe not needed
+                    node.receiveShadow = true;
                 }
             });
             this.gltf = gltf
