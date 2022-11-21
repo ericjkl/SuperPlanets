@@ -81,11 +81,11 @@ controls.flyControls.addEventListener("change", function moveSpaceship() {
 function addComet(target) {
     const [x, y, z] = Array(3)
         .fill()
-        .map(() => THREE.MathUtils.randFloatSpread(800));
+        .map(() => THREE.MathUtils.randFloatSpread(400));
 
     const raycaster = new Raycaster(new Vector3(x, y, z), new Vector3(1, 1, 0).normalize());
     let intersectionPoint = new Vector3()
-    raycaster.ray.intersectSphere(marsSphere, intersectionPoint)
+    raycaster.ray.intersectSphere(saturnSphere, intersectionPoint)
 
     const comet = new Planet({
         gltfPath: "assets/comet-explosion.glb",
@@ -163,6 +163,7 @@ const saturn = new Planet({
         z: 0
     }
 }, controls.scene)
+const saturnSphere = new Sphere(saturn.ref.position, 30)
 
 const venus = new Planet({
     radius: 30,
@@ -190,7 +191,6 @@ const mars = new Planet({
         z: -250
     }
 }, controls.scene)
-const marsSphere = new Sphere(mars.ref.position, 40)
 
 const moon = new Planet({
     radius: 3,

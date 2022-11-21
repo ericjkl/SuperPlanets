@@ -36,7 +36,7 @@ export default class Control {
         this.animationDriver = 0
         this.animationStep = Control.#getInitialAnimationStep()
         this.initialAnimationStep = this.animationStep
-        this.meteoriteAmount = 20
+        this.meteoriteAmount = 30
         this.onMeteoriteAmountChange = null;
         this.ambientLightingBrightness = 100;
         this.onAmbientLightingBrightnessChange = null;
@@ -164,7 +164,7 @@ export default class Control {
 
         const meteoriteAmountSlider = document.getElementById("meteoriteAmountSlider")
         meteoriteAmountSlider.oninput = () => {
-            this.meteoriteAmount = (meteoriteAmountSlider.value) ** 1.5 + 200
+            this.meteoriteAmount = (meteoriteAmountSlider.value) ** 1.5 + 50
             this.onMeteoriteAmountChange()
         }
 
